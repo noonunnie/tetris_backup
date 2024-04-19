@@ -33,7 +33,8 @@ module block_controller(
 	/*when outputting the rgb value in an always block like this, make sure to include the if(~bright) statement, as this ensures the monitor 
 	will output some data to every pixel and not just the images you are trying to display*/
 	always@ (*) begin		
-    	if(~bright||vCount==top||vCount==btm||hCount==Lside||hCount==Rside)	//force black if not inside the display area
+    	//if(~bright||vCount==top||vCount==btm||hCount==Lside||hCount==Rside)	//force black if not inside the display area
+		if(~bright||rEdge||lEdge||tEdge||bEdge)	//force black if not inside the display area and black borders
 			rgb = 12'b0000_0000_0000;
 		else if (block1||block2||block3||block4) 
 			rgb = RED; 
@@ -46,6 +47,12 @@ module block_controller(
 	assign block3=vCount>=(ypos-10+y3) && vCount<=(ypos+10+y3) && hCount>=(xpos-10+x3) && hCount<=(xpos+10+x3);
 	assign block4=vCount>=(ypos-10+y4) && vCount<=(ypos+10+y4) && hCount>=(xpos-10+x4) && hCount<=(xpos+10+x4);
 		
+	//TODO1
+	assign rEdge=vCount==(top-10)
+	assign lEdge=hCount==(Lside-10)
+	assign tEdge=vCount==(btm+10)
+	assign bEdge=hCount==(Rside+10)
+	//TODO1
 	
 	always@(posedge clk, posedge rst) 
 	begin
